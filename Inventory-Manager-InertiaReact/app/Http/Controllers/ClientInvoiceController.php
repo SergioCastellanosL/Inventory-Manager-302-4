@@ -75,6 +75,7 @@ class ClientInvoiceController extends Controller
         $client_invoices->item_id = $item->id;
         $client_invoices->total_price = request('amount') * $item->price;
         $client_invoices->save();
+        return response()->json($client_invoices, 200);
     }
 
     /**
@@ -84,5 +85,6 @@ class ClientInvoiceController extends Controller
     {
         $client_invoices = Client_Invoice::find($id);
         $client_invoices->delete();
+        return response()->json($client_invoices, 200);
     }
 }

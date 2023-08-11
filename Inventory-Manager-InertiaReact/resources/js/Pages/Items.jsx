@@ -1,8 +1,8 @@
-import Card from "@/Components/Card";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
-import { useState, useEffect } from "react";
-import { Link } from "@inertiajs/react";
+import Card from '@/Components/Card';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Head } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
+import { Link } from '@inertiajs/react';
 
 export default function Items({ auth }) {
     const [items, setItems] = useState([]);
@@ -41,14 +41,9 @@ export default function Items({ auth }) {
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={
-                <div>
-                    <h2 className="font-semibold text-xl text-gray-800 leading-tight">
-                        Providers
-                    </h2>
-                    <Link href={route("add", { type: "provider" })}>Add</Link>
-                </div>
-            }
+            header={<div><h2 className="font-semibold text-xl text-gray-800 leading-tight">Items</h2>
+            <Link href={route("add",{type: "item"})}>Add</Link></div>
+        }
         >
             <Head title="Items" />
 
@@ -58,6 +53,7 @@ export default function Items({ auth }) {
                         <div className="w-1/12">Id</div>
                         <div className="w-2/12">Name</div>
                         <div className="w-2/12">Price</div>
+                        <div className="w-2/12">Total Amount</div>
                         <div className="w-1/12"></div>
                         <div className="w-1/12"></div>
                         <div className="w-1/12"></div>

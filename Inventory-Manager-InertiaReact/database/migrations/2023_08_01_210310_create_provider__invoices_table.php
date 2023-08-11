@@ -13,9 +13,9 @@ return new class extends Migration
     {
         Schema::create('provider__invoices', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('item_id')->index()->constrained()->cascadeOnDelete();
-            $table->foreignId('user_id')->index()->constrained()->cascadeOnDelete();
             $table->foreignId('provider_id')->index()->constrained()->cascadeOnDelete();
+            $table->foreignId('user_id')->index()->constrained()->cascadeOnDelete();
+            $table->foreignId('item_id')->index()->constrained()->cascadeOnDelete();
             $table->integer('amount');
             $table->decimal('total_price', 10, 2);
             $table->timestamps();

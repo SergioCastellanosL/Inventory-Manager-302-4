@@ -26,12 +26,14 @@ Route::middleware(['auth', 'verified'])->group( function () {
 
     Route::get('/providers', [ProviderController::class, 'index']);
     Route::get('/providers/{id}', [ProviderController::class, 'show']);
+    Route::get('/providers/invoices/{id}', [ProviderController::class, 'showInvoices']);
     Route::post('/providers', [ProviderController::class, 'create']);
     Route::put('/providers/{id}', [ProviderController::class, 'update']);
     Route::delete('/providers/{id}', [ProviderController::class, 'destroy']);
 
     Route::get('/items', [ItemController::class, 'index']);
     Route::get('/items/{id}', [ItemController::class, 'show']);
+    Route::get('/items/invoices/{id}', [ItemController::class, 'showInvoices']);
     Route::post('/items', [ItemController::class, 'create']);
     Route::put('/items/{id}', [ItemController::class, 'update']);
     Route::delete('/items/{id}', [ItemController::class, 'destroy']);
@@ -39,6 +41,7 @@ Route::middleware(['auth', 'verified'])->group( function () {
 
     //Route::get('/clients', [ClientController::class, 'index']);
     Route::get('/clients/{id}', [ClientController::class, 'show']);
+    Route::get('/clients/invoices/{id}', [ClientController::class, 'showInvoices']);
     Route::post('/clients', [ClientController::class, 'create']);
     Route::put('/clients/{id}', [ClientController::class, 'update']);
     //Route::delete('/clients/{id}', [ClientController::class, 'destroy']);

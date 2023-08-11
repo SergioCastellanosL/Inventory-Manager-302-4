@@ -1,8 +1,8 @@
-import Card from "@/Components/Card";
-import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
-import { Head } from "@inertiajs/react";
-import { useState, useEffect } from "react";
-import { Link } from "@inertiajs/react";
+import Card from '@/Components/Card';
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
+import { Head } from '@inertiajs/react';
+import { useState, useEffect } from 'react';
+import { Link } from '@inertiajs/react';
 
 export default function Providers({ auth }) {
     const [providers, setProviders] = useState([]);
@@ -57,8 +57,8 @@ export default function Providers({ auth }) {
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg flex p-3 justify-evenly text-lg font-bold">
                         <div className="w-1/12">Id</div>
                         <div className="w-2/12">Name</div>
-                        <div className="w-2/12">Address</div>
                         <div className="w-3/12">Email</div>
+                        <div className="w-2/12">Address</div>
                         <div className="w-2/12">Phone</div>
                         <div className="w-1/12"></div>
                         <div className="w-1/12"></div>
