@@ -55,6 +55,11 @@ class ProviderController extends Controller
         return response()->json($provider, 200);
     }
 
+    public function showInvoices ($id) {
+        $provider = Provider::find($id);
+        return response()->json($provider->invoices, 200);
+    }
+
 
     /**
      * Show the form for editing the specified resource.

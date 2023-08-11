@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\item;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 
 class ItemController extends Controller
@@ -12,7 +13,12 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $items = Item::all();
+        $items = Item::select('items.*')
+        ->selectRaw('SUM(provider__invoices.amount) - SUM(client__invoices.amount) as total_amount')
+        ->leftJoin('client__invoices', 'items.id', '=', 'client__invoices.item_id')
+        ->leftJoin('provider__invoices', 'items.id', '=', 'provider__invoices.item_id')
+        ->groupBy('items.id')
+        ->get();
         return response()->json($items, 200);
     }
     /**
@@ -22,6 +28,11 @@ class ItemController extends Controller
     {
         $items = Item::find($id);
         return response()->json($items, 200);
+    }
+    public function showInvoices ($id) {
+        $item = Item::find($id);
+        $ans = array_merge(json_decode(json_encode($item->clientsInvoices),true), json_decode(json_encode($item->providersInvoices),true));
+        return response()->json($ans, 200);
     }
     /**
      * Show the form for creating a new resource.

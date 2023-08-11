@@ -31,8 +31,11 @@ Route::get('/dashboard', function () {
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/edit', function (Request $request) {
-    return Inertia::render('Edit', ['type'=> $request->query('type'),'id'=> $request->query('id')]);
+    return Inertia::render('Edit', ['type'=> $request->query('type'),'id'=> $request->query('id'), 'typeTwo'=>$request->query('typeTwo')]);
 })->middleware(['auth', 'verified'])->name('edit');
+Route::get('/invoices', function (Request $request) {
+    return Inertia::render('Invoices', ['type'=> $request->query('type'),'id'=> $request->query('id')]);
+})->middleware(['auth', 'verified'])->name('invoices');
 Route::get('/add', function (Request $request) {
     return Inertia::render('Add', ['type'=> $request->query('type')]);
 })->middleware(['auth', 'verified'])->name('add');
@@ -48,10 +51,6 @@ Route::get('/providers', function () {
 Route::get('/items', function () {
     return Inertia::render('Items');
 })->middleware(['auth', 'verified'])->name('items');
-
-Route::get('/invoices', function () {
-    return Inertia::render('Invoices');
-})->middleware(['auth', 'verified'])->name('invoices');
 
 Route::middleware('auth')->group(function () {
     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');

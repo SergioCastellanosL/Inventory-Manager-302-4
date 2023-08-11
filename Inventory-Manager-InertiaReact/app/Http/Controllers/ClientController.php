@@ -20,6 +20,11 @@ class ClientController extends Controller
         return response()->json($client, 200);
     }
 
+    public function showInvoices ($id) {
+        $client = Client::find($id);
+        return response()->json($client->invoices, 200);
+    }
+
     public function create (){
         $client = new Client;
         $client->first_name = request('first_name');
