@@ -5,40 +5,39 @@ import { useState, useEffect } from 'react';
 import { Link } from '@inertiajs/react';
 
 export default function Items({ auth }) {
-    const [items, setItems] = useState([]);    
+    const [items, setItems] = useState([]);
     const deleteEvent = (id) => {
-        fetch(`http://127.0.0.1:8000/api/items/${id}`,{
-            method: 'DELETE',
+        fetch(`http://127.0.0.1:8000/api/items/${id}`, {
+            method: "DELETE",
         })
-        .then(response => {
-            return response.json();
-        })
-        .then(getItems()
-        );
-    } ;
-    const editEvent = ()=>{
-        route('edit', type="client");
+            .then((response) => {
+                return response.json();
+            })
+            .then(getItems());
     };
-    // Call this function to get products data 
+    const editEvent = () => {
+        route("edit", (type = "client"));
+    };
+    // Call this function to get products data
     const getItems = () => {
         /* fetch API in action */
-        fetch('http://127.0.0.1:8000/api/items',{
-            method: 'GET',
+        fetch("http://127.0.0.1:8000/api/items", {
+            method: "GET",
             // headers: {
             //     'Authorization': `Bearer ${auth.}`,
             // }
         })
-        .then(response => {
-            return response.json();
-        })
-        .then(items => {
-            //Fetched product is stored in the state 
-            setItems(items);
-        });
+            .then((response) => {
+                return response.json();
+            })
+            .then((items) => {
+                //Fetched product is stored in the state
+                setItems(items);
+            });
     };
     useEffect(() => {
         getItems();
-     },[]); 
+    }, []);
     return (
         <AuthenticatedLayout
             user={auth.user}
@@ -59,10 +58,16 @@ export default function Items({ auth }) {
                         <div className="w-1/12"></div>
                         <div className="w-1/12"></div>
                     </div>
-                    {items.map(item=>{
-                        return(<Card data={item} type="item" key={item.id} 
-                        deleteEvent={deleteEvent}
-                        editEvent={editEvent}></Card>)
+                    {items.map((item) => {
+                        return (
+                            <Card
+                                data={item}
+                                type="item"
+                                key={item.id}
+                                deleteEvent={deleteEvent}
+                                editEvent={editEvent}
+                            ></Card>
+                        );
                     })}
                 </div>
             </div>
