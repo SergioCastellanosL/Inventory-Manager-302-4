@@ -36,6 +36,7 @@ export default function Edit({ auth, ...props }) {
     // Call this function to get products data
     const getData = () => {
         /* fetch API in action */
+        console.log(props);
         let url = `http://127.0.0.1:8000/api/${props.type}s/${props.id}`;
         if(props.type == "invoice"){
             console.log(props.typeTwo);
@@ -53,9 +54,6 @@ export default function Edit({ auth, ...props }) {
         .then(response => {
             return response.json();
         })
-            .then((response) => {
-                return response.json();
-            })
             .then((data) => {
                 //Fetched product is stored in the state
                 setData(data);
@@ -238,15 +236,6 @@ export default function Edit({ auth, ...props }) {
                                     />
                                 </div>
                             ) : null}
-                            <div className="mb-4 w-200 flex justify-center items-center ">
-                                <button
-                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-                                    type="submit"
-                                >
-                                    Save
-                                </button>
-                            </div>
-                            :null}
                             {type == "invoice" ?
                                 <div>
                                     <fieldset>
@@ -292,7 +281,14 @@ export default function Edit({ auth, ...props }) {
                                     <input type="text" name="total_price" value={data.total_price} onChange={handleChange} disabled />
                                 </div>
                                 : null}
-                            <button type='submit'>Save</button>
+                            <div className="mb-4 w-200 flex justify-center items-center ">
+                                <button
+                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                                    type="submit"
+                                >
+                                    Save
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
