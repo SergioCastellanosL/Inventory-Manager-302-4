@@ -16,7 +16,7 @@ class ProviderInvoiceController extends Controller
     public function index()
     {
         $provider_Invoices = Provider_invoice::all();
-        return response()->json($providers, 200);
+        return response()->json($provider_Invoices, 200);
     }
 
     /**
@@ -52,10 +52,10 @@ class ProviderInvoiceController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Provider_Invoice $provider_Invoice)
+    public function show($id)
     {
         $provider_Invoices = Provider_invoice::find($id);
-        return response()->json($providers, 200);
+        return response()->json($provider_Invoices, 200);
     }
 
     /**
@@ -71,17 +71,17 @@ class ProviderInvoiceController extends Controller
      */
     public function update($id)
     {
-        $provider_Invoices = $provider_Invoices::find($id);
+        $provider_Invoices = Provider_Invoice::find($id);
         $item = Item::find(request('item_id'));
         $provider= Provider::find(request('provider_id'));
         $provider_Invoices->amount = request('amount');
         $provider_Invoices->user_id = Auth::id();
         $provider_Invoices->provider_id = $provider->id;
         $provider_Invoices->item_id=$item->id;
-        $provider_Invoices->total_price = request('amount') * $item_price;
+        $provider_Invoices->total_price = request('amount') * $item->price;
         $provider_Invoices->save();
 
-    return response()->json($provider, 200);
+    return response()->json($provider_Invoices, 200);
     }
 
     /**
@@ -89,9 +89,9 @@ class ProviderInvoiceController extends Controller
      */
     public function destroy($id)
     {
-        $provider_Invoices = $provider_Invoices::find($id);
+        $provider_Invoices = Provider_Invoice::find($id);
         $provider_Invoices->delete();
 
-        return response()->json($provider, 200);
+        return response()->json($provider_Invoices, 200);
     }
 }
