@@ -71,6 +71,7 @@ export default function Invoices({ auth, ...props }) {
                         <div className="w-1/12"></div>
                     </div>
                     {invoices.map(invoice=>{
+                        console.log(type);
                         return(<Card data={invoice} type="invoice" type2={type} key={invoice.id} 
                         deleteEvent={deleteEvent}
                         editEvent={editEvent}></Card>)

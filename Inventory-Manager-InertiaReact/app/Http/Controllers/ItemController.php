@@ -13,13 +13,25 @@ class ItemController extends Controller
      */
     public function index()
     {
-        $items = Item::select('items.*')
-        ->selectRaw('SUM(provider__invoices.amount) - SUM(client__invoices.amount) as total_amount')
-        ->leftJoin('client__invoices', 'items.id', '=', 'client__invoices.item_id')
-        ->leftJoin('provider__invoices', 'items.id', '=', 'provider__invoices.item_id')
-        ->groupBy('items.id')
-        ->get();
-        return response()->json($items, 200);
+        $items = DB::table('items')
+    ->leftJoinSub(function ($query) {
+        $query->select('item_id', DB::raw('SUM(amount) as total_client_amount'))
+            ->from('client__invoices')
+            ->groupBy('item_id');
+    }, 'client_totals', function ($join) {
+        $join->on('items.id', '=', 'client_totals.item_id');
+    })
+    ->leftJoinSub(function ($query) {
+        $query->select('item_id', DB::raw('SUM(amount) as total_provider_amount'))
+            ->from('provider__invoices')
+            ->groupBy('item_id');
+    }, 'provider_totals', function ($join) {
+        $join->on('items.id', '=', 'provider_totals.item_id');
+    })
+    ->select('items.*', DB::raw('COALESCE(provider_totals.total_provider_amount, 0) - COALESCE(client_totals.total_client_amount, 0) as total_amount'))
+    ->get();
+
+return response()->json($items, 200);
     }
     /**
      * Display the specified resource.
