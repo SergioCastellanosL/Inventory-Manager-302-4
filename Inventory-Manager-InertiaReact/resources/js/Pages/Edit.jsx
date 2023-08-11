@@ -8,6 +8,7 @@ export default function Edit({ auth, ...props }) {
     const [item, setItem] = useState([]);
     const type= props.type;
     const id= props.id;
+    console.log(props);
     const getItem = () => {
         /* fetch API in action */
         fetch(`http://127.0.0.1:8000/api/items/${data.item_id}`, {

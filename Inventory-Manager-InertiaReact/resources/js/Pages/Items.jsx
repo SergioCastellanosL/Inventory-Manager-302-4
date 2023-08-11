@@ -59,6 +59,7 @@ export default function Items({ auth }) {
                         <div className="w-1/12"></div>
                     </div>
                     {items.map((item) => {
+                        console.log(item);
                         return (
                             <Card
                                 data={item}
