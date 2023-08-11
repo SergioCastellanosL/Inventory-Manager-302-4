@@ -1,6 +1,6 @@
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout';
-import { Head } from '@inertiajs/react';
-import { useState, useEffect, useSearchParams } from 'react';
+import AuthenticatedLayout from "@/Layouts/AuthenticatedLayout";
+import { Head } from "@inertiajs/react";
+import { useState, useEffect, useSearchParams } from "react";
 
 export default function Add({ auth, ...props }) {
     const [data, setData] = useState([]);
@@ -10,68 +10,75 @@ export default function Add({ auth, ...props }) {
     const getItem = () => {
         /* fetch API in action */
         fetch(`http://127.0.0.1:8000/api/items/${data.item_id}`, {
-            method: 'GET',
+            method: "GET",
         })
-            .then(response => {
+            .then((response) => {
                 return response.json();
             })
-            .then(items => {
-                //Fetched product is stored in the state 
+            .then((items) => {
+                //Fetched product is stored in the state
                 setItem(items);
                 console.log(item.price, data.amount);
-                let total= data.amount * items.price;
-                setData({ ...data, total_price: total })
+                let total = data.amount * items.price;
+                setData({ ...data, total_price: total });
             });
     };
     const handleChange = (event) => {
-        if(event.target.name == "select"){
+        if (event.target.name == "select") {
             setSelection(event.target.value);
-        }else{
+        } else {
             setData({ ...data, [event.target.name]: event.target.value });
         }
-    }
+    };
     const handleSubmit = () => {
         console.log(data);
         let url = `http://127.0.0.1:8000/api/${props.type}s`;
-        if(props.type == "invoice"){
-            if(selection == "Client"){
+        if (props.type == "invoice") {
+            if (selection == "Client") {
                 url = `http://127.0.0.1:8000/api/client_${props.type}s`;
-            }else if(selection == "Provider"){
+            } else if (selection == "Provider") {
                 url = `http://127.0.0.1:8000/api/provider_${props.type}s`;
             }
         }
         fetch(url, {
-            method: 'POST',
+            method: "POST",
             headers: {
                 "Content-Type": "application/json",
             },
-            body: JSON.stringify(data)
+            body: JSON.stringify(data),
         })
-            .then(response => {
+            .then((response) => {
                 return response.json();
             })
-            .then(data => {
-                //Fetched product is stored in the state 
+            .then((data) => {
+                //Fetched product is stored in the state
                 const loc = props.type + "s";
                 console.log(selection);
-                if(selection == "Client"){
-                    window.location.href = route(loc,{type:"client", id: -100});
-                }else if(selection == "Provider"){
-                    window.location.href = route(loc) +"?type:provider";
+                if (selection == "Client") {
+                    window.location.href = route(loc, {
+                        type: "client",
+                        id: -100,
+                    });
+                } else if (selection == "Provider") {
+                    window.location.href = route(loc) + "?type:provider";
                 }
                 window.location.href = route(loc);
             });
-    }
+    };
     useEffect(() => {
         console.log("effect");
-        if(data.amount && data.item_id && props.type =="invoice"){
+        if (data.amount && data.item_id && props.type == "invoice") {
             getItem();
         }
     }, [data.amount, data.item_id]);
     return (
         <AuthenticatedLayout
             user={auth.user}
-            header={<h2 className="font-semibold text-xl text-gray-800 leading-tight">Add {props.type}</h2>}
+            header={
+                <h2 className="font-semibold text-xl text-gray-800 leading-tight">
+                    Add {props.type}
+                </h2>
+            }
         >
             <Head title={props.type} />
 
@@ -79,96 +86,243 @@ export default function Add({ auth, ...props }) {
                 <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
                     <div className="bg-white overflow-hidden shadow-sm sm:rounded-lg flex p-3 justify-evenly text-lg font-bold">
                         <form
+                            className="space-y-[8px] w-400"
                             onSubmit={handleSubmit}
                         >
-                            {type == "provider" || type=="item" ?
-                                <div>
-                                    <label>Name: </label>
-                                    <input type="text" name="name" value={data.name} onChange={handleChange} />
+                            {type == "provider" || type == "item" ? (
+                                <div className="mb-4 w-200 flex justify-center items-center">
+                                    <label className="block text-gray-700 mr-3  w-24 text-right">
+                                        Name:
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="name"
+                                        value={data.name}
+                                        onChange={handleChange}
+                                        className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300 "
+                                    />
                                 </div>
-                                : null}
-                            {type == "provider" ?
-                                <div>
-                                    <label>Adress: </label>
-                                    <input type="text" name="address" value={data.address} onChange={handleChange} />
+                            ) : null}
+                            {type == "provider" ? (
+                                <div className="mb-4 w-200 flex justify-center items-center">
+                                    <label className="block text-gray-700 mr-3  w-24 text-right">
+                                        Adress:{" "}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="address"
+                                        value={data.address}
+                                        onChange={handleChange}
+                                        className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300"
+                                    />
                                 </div>
-                                : null}
-                            {type == "item" ?
-                                <div>
-                                    <label>Price: </label>
-                                    <input type="number" name="price" value={data.price} onChange={handleChange} />
+                            ) : null}
+                            {type == "item" ? (
+                                <div className="mb-4 w-200 flex justify-center items-center">
+                                    <label className="block text-gray-700 mr-3  w-24 text-right">
+                                        Price:{" "}
+                                    </label>
+                                    <input
+                                        type="number"
+                                        name="price"
+                                        value={data.price}
+                                        onChange={handleChange}
+                                        className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300"
+                                    />
                                 </div>
-                                : null}
-                            {type == "client" ?
-                                <div>
-                                    <label>First Name: </label>
-                                    <input type="text" name="first_name" value={data.first_name} onChange={handleChange} />
+                            ) : null}
+                            {type == "client" ? (
+                                <div className="mb-4 w-200 flex justify-center items-center">
+                                    <label className="block text-gray-700 mr-3  w-24 text-right">
+                                        First Name:{" "}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="first_name"
+                                        value={data.first_name}
+                                        onChange={handleChange}
+                                        className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300"
+                                    />
                                 </div>
-                                : null}
-                            {type == "client" ?
-                                <div>
-                                    <label>Last Name: </label>
-                                    <input type="text" name="last_name" value={data.last_name} onChange={handleChange} />
+                            ) : null}
+                            {type == "client" ? (
+                                <div className="mb-4 w-200 flex justify-center items-center">
+                                    <label className="block text-gray-700 mr-3  w-24 text-right">
+                                        Last Name:{" "}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="last_name"
+                                        value={data.last_name}
+                                        onChange={handleChange}
+                                        className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300"
+                                    />
                                 </div>
-                                : null}
-                            {type == "client" || type == "provider" ?
-                                <div>
-                                    <label>Email: </label>
-                                    <input type="email" name="email" value={data.email} onChange={handleChange} />
+                            ) : null}
+                            {type == "client" || type == "provider" ? (
+                                <div className="mb-4 w-200 flex justify-center items-center">
+                                    <label className="block  text-gray-700 mr-3  w-24 text-right">
+                                        Email:{" "}
+                                    </label>
+                                    <input
+                                        type="email"
+                                        name="email"
+                                        value={data.email}
+                                        onChange={handleChange}
+                                        className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300"
+                                    />
                                 </div>
-                                : null}
-                            {type == "client" || type == "provider" ?
-                                <div>
-                                    <label>Phone: </label>
-                                    <input type="phone" name="phone" value={data.phone} onChange={handleChange} />
+                            ) : null}
+                            {type == "client" || type == "provider" ? (
+                                <div className="mb-4 w-200 flex justify-center items-center">
+                                    <label className="block text-gray-700 mr-3  w-24 text-right">
+                                        Phone:{" "}
+                                    </label>
+                                    <input
+                                        type="phone"
+                                        name="phone"
+                                        value={data.phone}
+                                        onChange={handleChange}
+                                        className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300"
+                                    />
                                 </div>
-                                : null}
-                            {type == "invoice" ?
-                                <div>
+                            ) : null}
+                            {type == "invoice" ? (
+                                <div className="mb-4 w-200 flex justify-center items-center">
                                     <fieldset>
-                                        <legend>Invoice Type:</legend>
+                                        <legend className="mb-4 w-200 flex justify-center items-center">
+                                            Invoice Type:
+                                        </legend>
                                         <div>
-                                            {selection=="Client"?<input type="radio" name="select" value="Client" onChange={handleChange} checked />:<input type="radio" name="select" value="Client" onChange={handleChange} />}
-                                            <label >Client</label>
+                                            {selection == "Client" ? (
+                                                <input
+                                                    type="radio"
+                                                    name="select"
+                                                    value="Client"
+                                                    onChange={handleChange}
+                                                    checked
+                                                />
+                                            ) : (
+                                                <input
+                                                    type="radio"
+                                                    name="select"
+                                                    value="Client"
+                                                    onChange={handleChange}
+                                                />
+                                            )}
+                                            <label>Client</label>
                                         </div>
                                         <div>
-                                        {selection=="Provider"?<input type="radio" name="select" value="Provider" onChange={handleChange} checked />:<input type="radio" name="select" value="Provider" onChange={handleChange} />}
-                                            <label >Provider</label>
+                                            {selection == "Provider" ? (
+                                                <input
+                                                    type="radio"
+                                                    name="select"
+                                                    value="Provider"
+                                                    onChange={handleChange}
+                                                    checked
+                                                />
+                                            ) : (
+                                                <input
+                                                    type="radio"
+                                                    name="select"
+                                                    value="Provider"
+                                                    onChange={handleChange}
+                                                />
+                                            )}
+                                            <label>Provider</label>
                                         </div>
                                     </fieldset>
                                 </div>
-                                : null}
-                            {type == "invoice" ?
-                                <div>
-                                    <label>{selection} Id: </label>
-                                    {selection =="Client" ? <input type="number" name="client_id" value={data.client_id} onChange={handleChange} /> : null}
-                                    {selection =="Provider" ? <input type="number" name="provider_id" value={data.provider_id} onChange={handleChange} /> : null}
+                            ) : null}
+                            {type == "invoice" ? (
+                                <div className="mb-4 w-200 flex justify-center items-center">
+                                    <label className="block text-gray-700 mr-3  w-24 text-right">
+                                        {selection} Id:{" "}
+                                    </label>
+                                    {selection == "Client" ? (
+                                        <input
+                                            type="number"
+                                            name="client_id"
+                                            value={data.client_id}
+                                            onChange={handleChange}
+                                            className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300"
+                                        />
+                                    ) : null}
+                                    {selection == "Provider" ? (
+                                        <input
+                                            type="number"
+                                            name="provider_id"
+                                            value={data.provider_id}
+                                            onChange={handleChange}
+                                            className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300"
+                                        />
+                                    ) : null}
                                 </div>
-                                : null}
-                            {type == "invoice" ?
+                            ) : null}
+                            {type == "invoice" ? (
                                 <div>
-                                    <input type="number" name="user_id" value={data.user_id} onChange={handleChange} hidden />
+                                    <div className="mb-4 w-200 flex justify-center items-center">
+                                        <input
+                                            type="number"
+                                            name="user_id"
+                                            value={data.user_id}
+                                            onChange={handleChange}
+                                            hidden
+                                        />
+                                    </div>
                                 </div>
-                                : null}
-                            {type == "invoice" ?
-                                <div>
-                                    <label>Item Id: </label>
-                                    <input type="number" name="item_id" value={data.item_id} onChange={handleChange} />
+                            ) : null}
+                            {type == "invoice" ? (
+                                <div className="mb-4 w-200 flex justify-center items-center">
+                                    <label className="block text-gray-700 mr-3  w-24 text-right">
+                                        Item Id:{" "}
+                                    </label>
+                                    <input
+                                        type="number"
+                                        name="item_id"
+                                        value={data.item_id}
+                                        onChange={handleChange}
+                                        className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300"
+                                    />
                                 </div>
-                                : null}
-                            {type == "invoice" ?
-                                <div>
-                                    <label>Amount: </label>
-                                    <input type="number" name="amount" value={data.amount} onChange={handleChange} />
+                            ) : null}
+                            {type == "invoice" ? (
+                                <div className="mb-4 w-200 flex justify-center items-center">
+                                    <label className="block text-gray-700 mr-3  w-24 text-right">
+                                        Amount:{" "}
+                                    </label>
+                                    <input
+                                        type="number"
+                                        name="amount"
+                                        value={data.amount}
+                                        onChange={handleChange}
+                                        className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300"
+                                    />
                                 </div>
-                                : null}
-                            {type == "invoice" ?
-                                <div>
-                                    <label>Total Price: </label>
-                                    <input type="text" name="total_price" value={data.total_price} onChange={handleChange} disabled />
+                            ) : null}
+                            {type == "invoice" ? (
+                                <div className="mb-4 w-200 flex justify-center items-center">
+                                    <label className="block text-gray-700 mr-3  w-24 text-right">
+                                        Total Price:{" "}
+                                    </label>
+                                    <input
+                                        type="text"
+                                        name="total_price"
+                                        value={data.total_price}
+                                        onChange={handleChange}
+                                        disabled
+                                        className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300"
+                                    />
                                 </div>
-                                : null}
-                            <button type='submit'>Add</button>
+                            ) : null}
+                            <div className="mb-4 w-200 flex justify-center items-center">
+                                <button
+                                    className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded "
+                                    type="submit"
+                                >
+                                    Add
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </div>
