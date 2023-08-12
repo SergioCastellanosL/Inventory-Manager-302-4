@@ -6,6 +6,7 @@ export default function Add({ auth, ...props }) {
     const [data, setData] = useState([]);
     const [selection, setSelection] = useState("Client");
     const [item, setItem] = useState([]);
+    const [errors, setErrors]= useState({});
     const type = props.type;
     const getItem = () => {
         /* fetch API in action */
@@ -18,7 +19,6 @@ export default function Add({ auth, ...props }) {
             .then((items) => {
                 //Fetched product is stored in the state
                 setItem(items);
-                console.log(item.price, data.amount);
                 let total = data.amount * items.price;
                 setData({ ...data, total_price: total });
             });
@@ -28,10 +28,59 @@ export default function Add({ auth, ...props }) {
             setSelection(event.target.value);
         } else {
             setData({ ...data, [event.target.name]: event.target.value });
+            validateData(event.target);
         }
     };
-    const handleSubmit = () => {
-        console.log(data);
+    const validateData = (target)=>{
+        console.log(target);
+        if(target.value == ""){
+            setErrors({...errors,[target.name]:"Field required"});
+        }else{
+            setErrors({ ...errors, [target.name]: "" })
+            if(target.name == "name"||target.name == "first_name"||target.name == "last_name"||target.name == "address"){
+                if(target.value.length<5){
+                    setErrors({...errors, [target.name]:`${target.name} has to be longer than 5 characters`});
+                }
+                
+            }
+            if(target.name == "client_id"||target.name == "provider_id"||target.name == "item_id"||target.name == "amount"){
+                if(parseInt(target.value)>0){
+                    setErrors({...errors, [target.name]:`${target.name} has to be a valid id`});
+                }
+            }
+            if(target.name == "email"){
+                if(!target.value.match(
+                    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+                  )){
+                    setErrors({...errors, [target.name]:`${target.name} has to be in a valid format`});
+                }
+            }
+        }
+        
+
+    }
+    const checkValidation= ()=>{
+        console.log("check val");
+        console.log(errors)
+        for (const [key, value] of Object.entries(data)) {
+            console.log(key, value);
+            if (value == '' && key != 'id') {
+                setErrors({ ...errors, [key]: "Field required" });
+                return false;
+            }
+        }
+        
+        if(Object.entries(errors)<1){
+            return false;
+        }
+        for (const [key, value] of Object.entries(errors)) {
+            if(value != ''){
+                return false;
+            }
+        }
+        return true;
+    }
+    const fetchFunc=()=>{
         let url = `http://127.0.0.1:8000/api/${props.type}s`;
         if (props.type == "invoice") {
             if (selection == "Client") {
@@ -64,6 +113,18 @@ export default function Add({ auth, ...props }) {
                 }
                 window.location.href = route(loc);
             });
+    }
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if(data.length<1){
+            console.log("out");
+            setErrors({phone: "Fill the information on the inputs"});
+            return;
+        }else if(checkValidation()){
+            fetchFunc();
+        }
+
+        
     };
     useEffect(() => {
         console.log("effect");
@@ -90,6 +151,7 @@ export default function Add({ auth, ...props }) {
                             onSubmit={handleSubmit}
                         >
                             {type == "provider" || type == "item" ? (
+                                <div>
                                 <div className="mb-4 w-200 flex justify-center items-center">
                                     <label className="block text-gray-700 mr-3  w-24 text-right">
                                         Name:
@@ -101,9 +163,13 @@ export default function Add({ auth, ...props }) {
                                         onChange={handleChange}
                                         className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300 "
                                     />
-                                </div>
+                                </div> 
+                                    <div className="text-red-700">{errors.name}</div>
+                                    </div>
+
                             ) : null}
                             {type == "provider" ? (
+                                <div>
                                 <div className="mb-4 w-200 flex justify-center items-center">
                                     <label className="block text-gray-700 mr-3  w-24 text-right">
                                         Adress:{" "}
@@ -116,6 +182,9 @@ export default function Add({ auth, ...props }) {
                                         className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300"
                                     />
                                 </div>
+                                    <div className="text-red-700">{errors.address}</div>
+                                    </div>
+
                             ) : null}
                             {type == "item" ? (
                                 <div className="mb-4 w-200 flex justify-center items-center">
@@ -129,9 +198,11 @@ export default function Add({ auth, ...props }) {
                                         onChange={handleChange}
                                         className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300"
                                     />
+                                    <div className="text-red-700">{errors.price}</div>
                                 </div>
                             ) : null}
                             {type == "client" ? (
+                                <div>
                                 <div className="mb-4 w-200 flex justify-center items-center">
                                     <label className="block text-gray-700 mr-3  w-24 text-right">
                                         First Name:{" "}
@@ -144,8 +215,12 @@ export default function Add({ auth, ...props }) {
                                         className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300"
                                     />
                                 </div>
+                                    <div className="text-red-700">{errors.first_name}</div>
+                                    </div>
+
                             ) : null}
                             {type == "client" ? (
+                                <div>
                                 <div className="mb-4 w-200 flex justify-center items-center">
                                     <label className="block text-gray-700 mr-3  w-24 text-right">
                                         Last Name:{" "}
@@ -158,8 +233,12 @@ export default function Add({ auth, ...props }) {
                                         className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300"
                                     />
                                 </div>
+                                    <div className="text-red-700">{errors.last_name}</div>
+                                    </div>
+
                             ) : null}
                             {type == "client" || type == "provider" ? (
+                                <div>
                                 <div className="mb-4 w-200 flex justify-center items-center">
                                     <label className="block  text-gray-700 mr-3  w-24 text-right">
                                         Email:{" "}
@@ -172,8 +251,13 @@ export default function Add({ auth, ...props }) {
                                         className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300"
                                     />
                                 </div>
+                                    <div className="text-red-700">{errors.email}</div>
+                                    </div>
+
                             ) : null}
                             {type == "client" || type == "provider" ? (
+                                <div>
+
                                 <div className="mb-4 w-200 flex justify-center items-center">
                                     <label className="block text-gray-700 mr-3  w-24 text-right">
                                         Phone:{" "}
@@ -186,6 +270,10 @@ export default function Add({ auth, ...props }) {
                                         className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300"
                                     />
                                 </div>
+                                <div className="text-red-700">{errors.phone}</div>
+                                </div>
+
+
                             ) : null}
                             {type == "invoice" ? (
                                 <div className="mb-4 w-200 flex justify-center items-center">
@@ -273,6 +361,7 @@ export default function Add({ auth, ...props }) {
                                 </div>
                             ) : null}
                             {type == "invoice" ? (
+                                <div>
                                 <div className="mb-4 w-200 flex justify-center items-center">
                                     <label className="block text-gray-700 mr-3  w-24 text-right">
                                         Item Id:{" "}
@@ -285,8 +374,12 @@ export default function Add({ auth, ...props }) {
                                         className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300"
                                     />
                                 </div>
+                                    <div className="text-red-700">{errors.item_id}</div>
+                                    </div>
+
                             ) : null}
                             {type == "invoice" ? (
+                                <div>
                                 <div className="mb-4 w-200 flex justify-center items-center">
                                     <label className="block text-gray-700 mr-3  w-24 text-right">
                                         Amount:{" "}
@@ -298,6 +391,8 @@ export default function Add({ auth, ...props }) {
                                         onChange={handleChange}
                                         className="mt-1 p-2 border rounded-md w-1/2 focus:outline-none focus:ring focus:border-blue-300"
                                     />
+                                </div>
+                                <div className="text-red-700">{errors.amount}</div>
                                 </div>
                             ) : null}
                             {type == "invoice" ? (
